@@ -26,6 +26,7 @@ app.use(morgan("dev"));
 // CORS must be BEFORE routes
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://stay-smart-eta.vercel.app",
   "https://stay-smart-git-main-mayank-bodhes-projects.vercel.app",
   "https://stay-smart-oki18p4t2-mayank-bodhes-projects.vercel.app",
 ];
