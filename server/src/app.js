@@ -27,7 +27,10 @@ app.use(morgan("dev"));
 // CORS must be BEFORE routes
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://stay-smart-git-main-mayank-bodhes-projects.vercel.app",
+    ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -54,7 +57,6 @@ app.use("/api/host-reviews", hostReviewRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/notifications", notificationRoutes);
-
 
 
 app.use(notFound);
