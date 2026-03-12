@@ -18,23 +18,29 @@ import wishlistRoutes from "./routes/wishlist.js";
 import messageRoutes from "./routes/messages.js";
 import notificationRoutes from "./routes/notifications.js";
 
-
 const app = express();
 
 app.use(helmet());
 app.use(morgan("dev"));
 
 // CORS must be BEFORE routes
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://stay-smart-git-main-mayank-bodhes-projects.vercel.app",
+  "https://stay-smart-oki18p4t2-mayank-bodhes-projects.vercel.app",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://stay-smart-git-main-mayank-bodhes-projects.vercel.app",
-    ],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  })
+  }),
 );
 
 // IMPORTANT: no app.options wildcard in your setup
@@ -43,7 +49,7 @@ app.use(express.json({ limit: "2mb" }));
 app.use(cookieParser());
 
 app.get("/health", (req, res) =>
-  res.json({ ok: true, message: "Server running ✅" })
+  res.json({ ok: true, message: "Server running ✅" }),
 );
 
 app.use("/api/auth", authRoutes);
@@ -57,7 +63,6 @@ app.use("/api/host-reviews", hostReviewRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/notifications", notificationRoutes);
-
 
 app.use(notFound);
 app.use(errorHandler);
