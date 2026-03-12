@@ -369,7 +369,7 @@ export default function Home() {
             </div>
 
             {/* Search panel */}
-            <div className="rounded-[30px] border border-white/10 bg-white/10 p-4 shadow-[0_16px_40px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:p-5">
+            <div className="rounded-[30px] border border-white/10 bg-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:p-5">
               <div className="rounded-[26px] border border-white/10 bg-white p-4 text-slate-900 sm:p-5">
                 <div className="text-lg font-bold sm:text-xl">
                   Start your next stay search
