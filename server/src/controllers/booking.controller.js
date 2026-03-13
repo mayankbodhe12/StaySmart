@@ -105,7 +105,7 @@ export async function createBooking(req, res, next) {
     const creatorEmail = (req.user.email || "").trim().toLowerCase();
     const uniqueEmails = [...new Set(emails)].filter((e) => e !== creatorEmail);
 
-    let groupId = null;
+    let groupId;
     let splitMembers = [];
     let paymentStatus = "paid";
     let status = "confirmed";
@@ -134,7 +134,7 @@ export async function createBooking(req, res, next) {
       status = "pending";
     }
 
-    const booking = await Booking.create({
+    const bookingData = {
       listingId,
       hostId: listing.hostId,
       guestId: req.user.sub,
@@ -145,10 +145,15 @@ export async function createBooking(req, res, next) {
       pricePerNight,
       totalAmount,
       status,
-      groupId,
       splitMembers,
       paymentStatus,
-    });
+    };
+
+    if (groupId) {
+      bookingData.groupId = groupId;
+    }
+
+    const booking = await Booking.create(bookingData);
 
     await createNotification(req, {
       userId: listing.hostId,
@@ -343,7 +348,7 @@ export async function checkListingAvailability(req, res, next) {
     }).select("checkIn checkOut status paymentStatus");
 
     const bookingConflict = existingBookings.find((b) =>
-      datesOverlap(checkIn, checkOut, b.checkIn, b.checkOut)
+      datesOverlap(checkIn, checkOut, b.checkIn, b.checkOut),
     );
 
     if (bookingConflict) {
@@ -361,7 +366,7 @@ export async function checkListingAvailability(req, res, next) {
     }
 
     const blockedConflict = (listing.blockedRanges || []).find((range) =>
-      datesOverlap(checkIn, checkOut, range.startDate, range.endDate)
+      datesOverlap(checkIn, checkOut, range.startDate, range.endDate),
     );
 
     if (blockedConflict) {
@@ -386,13 +391,12 @@ export async function checkListingAvailability(req, res, next) {
   }
 }
 
-
 export async function getListingBookedRanges(req, res, next) {
   try {
     const { listingId } = req.params;
 
     const listing = await Listing.findById(listingId).select(
-      "_id status blockedRanges"
+      "_id status blockedRanges",
     );
 
     if (!listing || listing.status !== "active") {
@@ -425,7 +429,7 @@ export async function getListingBookedRanges(req, res, next) {
     }));
 
     const ranges = [...bookingRanges, ...blockedRanges].sort(
-      (a, b) => new Date(a.checkIn) - new Date(b.checkIn)
+      (a, b) => new Date(a.checkIn) - new Date(b.checkIn),
     );
 
     res.json({ ranges });
