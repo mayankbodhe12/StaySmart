@@ -95,7 +95,6 @@ const BookingSchema = new mongoose.Schema(
 
     groupId: {
       type: String,
-      default: null,
       unique: true,
       sparse: true,
       index: true,
