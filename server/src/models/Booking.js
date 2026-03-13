@@ -95,9 +95,6 @@ const BookingSchema = new mongoose.Schema(
 
     groupId: {
       type: String,
-      unique: true,
-      sparse: true,
-      index: true,
     },
 
     splitMembers: {
@@ -128,6 +125,16 @@ const BookingSchema = new mongoose.Schema(
     },
   },
   { timestamps: true },
+);
+
+BookingSchema.index(
+  { groupId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      groupId: { $type: "string" },
+    },
+  },
 );
 
 export default mongoose.model("Booking", BookingSchema);
